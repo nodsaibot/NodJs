@@ -12,12 +12,9 @@ njs.html = h=> h ? t.innerHTML=h : t.innerHTML;
 njs.text = h=> h ? t.textContent=h : t.textContent; 
 njs.hide = ()=> t.style.display = 'none'; 
 njs.show = ()=> t.style.display = '';
-njs.addClass = c=>{
-   c.split(' ').forEach(i=>{
-     t.classList.add(i); });
-}	
+njs.addClass = c=>{ c.split(' ').forEach(i=>{ t.classList.add(i); }); }	
 njs.removeClass = c=> t.classList.remove(c);	
-njs.toggleClass = c=> t.classList.contains(c) ? t.classList.remove(c) : t.classList.add(c); 
+njs.toggleClass = c=> t.classList.toggle(c); 
 njs.append = c=> t.innerHTML += c; 
 njs.prepend = c=> t.innerHTML = c + t.innerHTML; 
 njs.before = c=> t.insertAdjacentHTML('beforebegin', c); 	

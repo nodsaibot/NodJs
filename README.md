@@ -3,8 +3,8 @@ Want to use Vanilla JS but want the jQuery fell without the bloat? NodJs is for 
 
 ![Licence](https://img.shields.io/badge/Licence-MIT-lightgrey.svg)
 ![Project Status](https://img.shields.io/badge/Project%20Status-Beta-yellow.svg)
-![Size Minified](https://img.shields.io/badge/Size%20(Minified)-4.6kb-brightgreen.svg)
-![Size Gzipped](https://img.shields.io/badge/Size%20(Gzipped)-2.5kb-brightgreen.svg)
+![Size](https://img.shields.io/badge/Size-4.6kb-brightgreen.svg)
+![Size Minified](https://img.shields.io/badge/Size%20(Minified)-2.5kb-brightgreen.svg)
 
 **This project is now in beta, make sure to test your integration with this code thoroughly before deploying**
 ### jQuery exists, why do I need this?

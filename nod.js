@@ -1,85 +1,168 @@
 /* 
-	NodJs v0.3 
-  https://github.com/nodsaibot/NodJ 
+	NodJs v1.0.3 
+  https://github.com/nodsaibot/NodJs 
 */
-let se, t, _njs = Element.prototype,
-$ = function(c){
-  se = c;
-  t = njs_qs(c);
-  return t;
-},
-njs_qs = c => (document.querySelectorAll(c).length>1) ? document.querySelectorAll(c) : document.querySelector(c);
-	_njs.html = function(h){
-    if(h) this.innerHTML=h; return h ?  this : this.innerHTML;
-	}
-	_njs.text = function(h){
-    if(h) this.textContent=h; return h ?  this : this.textContent;				
-	}
-	_njs.hide = function(){
-		this.style.display = 'none'; return this;
-	}
-	_njs.show = function(){
-		this.style.display = ''; return this;
-	}
-	_njs.addClass = function(c){
-			var array = c.split(' ');
-			var el = this;
-		    array.forEach(function(i){
-		      el.classList.add(i); }); return this;
-	}	
-	_njs.removeClass = function(c){
-		  this.classList.remove(c);  return this;
-	}	
-	_njs.toggleClass = function(c){
-    this.classList.toggle(c);
-		return this;
-	}
-	_njs.append = function(c){
-		this.innerHTML += c; return this;
-	}	
-	_njs.prepend = function(c){
-		this.innerHTML = c + this.innerHTML; return this;
-	}
-	_njs.before = function(c){
-		 this.insertAdjacentHTML('beforebegin', c); return this;
-	}	
-	_njs.after = function(c){
-		 this.insertAdjacentHTML('afterend', c); return this;
-	}	
-	_njs.next = function(){
-		return  this.nextElementSibling;  
-	}	
-	_njs.previous = function(){
-		return  this.previousElementSibling; 
-	}	
-	_njs.parent = function(){
-		return  this.parentNode;
-	}		
-	_njs.val = function(h){
-		return h ? this.value=h : this.value;
-	}	
-	_njs.remove = function(){
-		this.parentNode.removeChild(this); return this;
-	}	
-	_njs.attr = function(a,b){
-		return b ? this.setAttribute(a,b) : this.getAttribute(a);	
-	}
-	_njs.on = function(h,f){
-		return this.addEventListener(h,f);
-	}	
-	_njs.each = function(callback){
-		var $obj = nodjs_qs(se);
-		for (var i=0, len=$obj.length; i<len; i++)
-    if ( callback.call($obj[i], i, $obj[i]) === false ) break;
-	}
-	$.ajax = function(o){
-		var r = new XMLHttpRequest();
-		r.open(o.type, o.url, true);
-		r.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-		r.onreadystatechange = function () {
-		  if (r.readyState != 4 || r.status != 200)
-		   o.success(r.responseText); };
-		if(typeof o.data === 'object')
-		o.data = Object.keys(o.data).reduce(function(a,k){a.push(k+'='+encodeURIComponent(o.data[k]));return a},[]).join('&')
-		r.send(o.data);
-	}	
+function $(s) {
+    if (typeof s === "string" || s instanceof String) {
+      return new _nodjs(...document.querySelectorAll(s))
+    } else {
+      return new _nodjs(s)
+    }
+  }
+class _nodjs extends Array {
+    ready(cl) {
+        const isReady = this.some(e => {
+        return e.readyState != null && e.readyState != "loading";
+        })
+        if (isReady) {
+        cl()
+        } else {
+        this.on("DOMContentLoaded", cl)
+        }
+        return this
+    }
+
+    on(...a) {
+        if (typeof a[1] === "function") {
+        this.forEach(e => e.addEventListener(a[0], a[1]))
+        } else {
+        this.forEach(elem => {
+            elem.addEventListener(a[0], e => {
+            if (e.target.matches(a[1])) a[2](e);
+            })
+        })
+        }
+        return this
+    }
+    html(h){
+        let rhtml='';      
+        this.forEach((e) => {
+        if (h)   e.innerHTML = h;
+        else  rhtml += e.innerHTML;
+        });  
+        return h ? this : rhtml;   
+        }
+    text(h){
+        let rtext='';      
+        this.forEach((e) => {
+            if (h)   e.textContent = h;
+            else  rtext += e.textContent;
+        });  
+            return h ? this : rtext;   
+        }
+    next() {
+        return this.map(e => e.nextElementSibling).filter(e => e != null)
+    }
+
+    prev() {
+        return this.map(e => e.previousElementSibling).filter(e => e != null)
+    }
+    append(c){
+        this.forEach(e => e.insertAdjacentHTML('beforeend',c)); return this;
+        }	
+    prepend(c){
+        this.forEach(e => e.insertAdjacentHTML('afterbegin',c)); return this;
+        }
+    before(c){
+            this.forEach(e => e.insertAdjacentHTML('beforebegin', c)); return this;
+        }	
+    after(c){
+            this.forEach(e => e.insertAdjacentHTML('afterend', c)); return this;
+        }	
+    removeClass(c) {
+        this.forEach(e => e.classList.remove(c)); return this
+    }
+
+    addClass(c) {
+        this.forEach(e => e.classList.add(c)); return this
+    }
+    toggleClass(c) {
+        this.forEach(e => e.classList.toggle(c)); return this
+    }
+    hide() { 
+        this.forEach(e =>{ e.style['visibility'] = 'hidden';  e.style['opacity'] = 0;}); return this
+    } 
+    show() { 
+        this.forEach(e =>{ e.style['visibility'] = 'visible';  e.style['opacity'] = 1;}); return this
+    }  
+    toggle() { 
+        this.forEach(e =>{  if(e.style['visibility'] == 'visible'||e.style['visibility'] =='') $(e).hide(); else $(e).show() }); return this
+    }  
+
+    closest(s){
+        return this.map(e => e.closest(s)).filter(e => e != null)
+        } 
+    css(...c) {
+        const camelProp = c[0].replace(/(-[a-z])/, g => { return g.replace("-", "").toUpperCase() });
+        this.forEach(e => (e.style[camelProp] = c[1])); return this
+    }
+    parent(){
+        return this.map(e => e.parentElement).filter(e => e != null)
+    }		
+    val(v){
+        if(v)
+        { this.forEach(e => e.value=v ); return this;}
+        return this[0].value;
+    }	
+    remove(){
+        this.forEach(e => e.parentNode.removeChild(e)); return this;
+    }	
+    attr(...a){
+        this.forEach(e =>  a[1] ? e.setAttribute(a[0],a[1]) : e.getAttribute(a[0])); return this;
+    }
+    each(cl){
+        this.forEach((e,i) => {  cl.call(e, i, e); })       
+    }
+}
+  
+class _nodjs_promise {
+    constructor(promise) {
+        this.promise = promise
+    }
+
+    done(cl) {
+        this.promise = this.promise.then(data => {
+        cl(data)
+        return data
+        })
+        return this
+    }
+
+    fail(cl) {
+        this.promise = this.promise.catch(cl)
+        return this
+    }
+
+    always(cl) {
+        this.promise = this.promise.finally(cl)
+        return this
+    }
+}
+  
+  
+$.get = function ({ url, data = {}, success = () => {}, dataType }) {
+const q = Object.entries(data)
+    .map(([key, value]) => {
+    return `${key}=${value}`
+    })
+    .join("&")
+
+return new _nodjs_promise(
+    fetch(`${url}?${q}`, {
+    method: "GET",
+    headers: {
+        "Content-Type": dataType,
+    },
+    })
+    .then(res => {
+        if (res.ok) {
+        return res.json()
+        } else {
+        throw new Error(res.status)
+        }
+    })
+    .then(data => {
+        success(data)
+        return data
+    }));
+}
